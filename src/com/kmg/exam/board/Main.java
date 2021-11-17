@@ -45,13 +45,15 @@ public class Main {
     sc.close();
   }
 }
-class Article{
+class Article {
   int id;
   String title;
   String body;
+
   public String toString() {
 
-    return "{id: \"" + id+ "\"" + ", title: \"" +title+ "\"" + ", body: \"" + body+"\"}";}
+    return String.format("{id: \"%d\", title: \"%s\", body: \"%s\"}", id, title, body);
 
 
   }
+}
