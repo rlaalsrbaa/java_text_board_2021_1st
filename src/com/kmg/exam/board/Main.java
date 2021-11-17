@@ -49,5 +49,9 @@ class Article{
   int id;
   String title;
   String body;
+  public String toString() {
 
-}
+    return "{id: \"" + id+ "\"" + ", title: \"" +title+ "\"" + ", body: \"" + body+"\"}";}
+
+
+  }
