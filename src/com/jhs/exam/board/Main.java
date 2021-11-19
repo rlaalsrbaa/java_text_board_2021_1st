@@ -1,16 +1,11 @@
 package com.jhs.exam.board;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-/*
-### TODO 예시
-- [.] /usr/article/detail 입력처리
-- [ ] /usr/article/detail 입력되면 가장 최근 게시물 정보 노출
-*/
-
 public class Main {
-  static void makeTestData(ArrayList<Article> articles) {
+  static void makeTestData(List<Article> articles) {
     articles.add(new Article(1, "제목1", "내용1"));
     articles.add(new Article(2, "제목2", "내용2"));
     articles.add(new Article(3, "제목3", "내용3"));
@@ -23,7 +18,7 @@ public class Main {
     System.out.println("== 프로그램 시작 ==");
 
     int articlesLastId = 0;
-    ArrayList<Article> articles = new ArrayList<Article>();
+    List<Article> articles = new ArrayList<>();
 
     makeTestData(articles);
 
