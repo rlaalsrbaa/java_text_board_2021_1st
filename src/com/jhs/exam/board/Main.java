@@ -1,9 +1,9 @@
 package com.jhs.exam.board;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /*
-
 ### TODO 예시
 - [.] /usr/article/detail 입력처리
 - [ ] /usr/article/detail 입력되면 가장 최근 게시물 정보 노출
@@ -18,6 +18,13 @@ public class Main {
 
     int articlesLastId = 0;
     Article lastArticle = null;
+    ArrayList<Article> articles = new ArrayList<Article>();
+
+    // 테스트 데이터 3개 등록, 시작
+    articles.add(new Article(1, "제목1", "내용1"));
+    articles.add(new Article(2, "제목2", "내용2"));
+    articles.add(new Article(3, "제목3", "내용3"));
+    // 테스트 데이터 3개 등록, 끝
 
     while (true) {
       System.out.printf("명령) ");
@@ -25,6 +32,16 @@ public class Main {
 
       if (cmd.equals("exit")) {
         break;
+      } else if (cmd.equals("/usr/article/list")) {
+        System.out.println("- 게시물 리스트 -");
+        System.out.println("--------------------");
+        System.out.println("번호 / 제목");
+        System.out.println("--------------------");
+
+        for (Article article : articles) {
+          System.out.printf("%d / %s\n", article.id, article.title);
+        }
+
       } else if (cmd.equals("/usr/article/detail")) {
 
         if (lastArticle == null) {
