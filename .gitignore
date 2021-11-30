@@ -1,3 +1,7 @@
 .idea
 out
+<<<<<<< HEAD
 *.iml
+=======
+Board2.iml
+>>>>>>> acc1624407dcbb6ab546a5d4c03eab60f9ee34e4
