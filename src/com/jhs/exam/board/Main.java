@@ -52,13 +52,22 @@ public class Main {
 
       } else if (rq.getActionMethodName().equals("detail")) {
 
+        try {
+          articles.get(Integer.parseInt(params.get("id"))-1);
+        }
+
+        catch (Exception e){
+          System.out.println("id값은 양의 정수를 입력해주세요.");
+          continue;
+        }
+
         if (Integer.parseInt(params.get("id")) > articles.size()) {
           System.out.println("게시물이 존재하지 않습니다.");
           continue;
         }
 
-        Article article = articles.get(Integer.parseInt(params.get("id")) - 1);
 
+        Article article = articles.get(Integer.parseInt(params.get("id")) - 1);
         System.out.println("- 게시물 상세내용 -");
         System.out.printf("번호 : %d\n", article.id);
         System.out.printf("제목 : %s\n", article.title);
