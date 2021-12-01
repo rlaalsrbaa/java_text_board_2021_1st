@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Main {
   static void makeTestData(List<Article> articles) {
-    for (int i = 1; i <= 200; i++) {
+    for (int i = 1; i <= 15; i++) {
       articles.add(new Article(i, "제목" + i, "내용" + i));
     }
   }
@@ -42,7 +42,7 @@ public class Main {
           List<Article> filteredArticles1 = new ArrayList<>();
           List<Article> filteredArticles2 = new ArrayList<>();
           int page;
-          boolean orderById = false;
+          boolean orderByIdDesc = false;
           String searchKeyword = params.get("searchKeyword");
           for(Article article : articles){
             if(article.title.contains(searchKeyword) || article.body.contains(searchKeyword)){
@@ -56,24 +56,28 @@ public class Main {
             }catch (IndexOutOfBoundsException e){}
           }
           if(params.get("orderBy").equals("idDesc")){
-            orderById = true;
+            orderByIdDesc = true;
           }else if(params.get("orderBy").equals("idAsc")){
-            orderById = false;
+            orderByIdDesc = false;
           }
-          if(orderById){
-          }
-          for(Article article : filteredArticles2){
-            System.out.printf("%d / %s\n",article.id,article.title);
+          if(orderByIdDesc){
+             for(int i = filteredArticles2.size()-1; i >= 0;i--){
+               System.out.printf("%d / %s\n",filteredArticles2.get(i).id,filteredArticles2.get(i).title);
+             }
+          }else{
+            for(Article article : filteredArticles2){
+              System.out.printf("%d / %s\n",article.id,article.title);
+            }
           }
           continue;
         }
 
 
-        /* if (params.isEmpty()) {
+         if (params.isEmpty()) {
             for (int i = articles.size() - 1; i >= 0; i--) {
               System.out.printf("%d / %s\n", articles.get(i).id, articles.get(i).title);
             }
-          }*/
+          }
       }                                                                     // ========== list 종료 ============
       else if (rq.getActionMethodName().equals("detail")) {
 
