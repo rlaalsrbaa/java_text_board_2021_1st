@@ -33,86 +33,13 @@ public class Main {
       if (rq.getActionMethodName().equals("exit")) {
         break;
       } else if (rq.getActionMethodName().equals("list")) {
-        System.out.println("- 게시물 리스트 -");
-        System.out.println("--------------------");
-        System.out.println("번호 / 제목");
-        System.out.println("--------------------");
+        actionUsrArticleList(rq, articles);
 
-        if(params.containsKey("searchKeyword") && params.containsKey("page") && params.containsKey("orderBy")){
-          List<Article> filteredArticles1 = new ArrayList<>();
-          List<Article> filteredArticles2 = new ArrayList<>();
-          int page;
-          boolean orderByIdDesc = false;
-          String searchKeyword = params.get("searchKeyword");
-          for(Article article : articles){
-            if(article.title.contains(searchKeyword) || article.body.contains(searchKeyword)){
-              filteredArticles1.add(article);
-            }
-          }
-          page = Integer.parseInt(params.get("page"));
-          for(int i = filteredArticles1.size() - (page*10);  i < filteredArticles1.size()-((page-1)*10);i++ ){
-            try{
-              filteredArticles2.add(filteredArticles1.get(i));
-            }catch (IndexOutOfBoundsException e){}
-          }
-          if(params.get("orderBy").equals("idDesc")){
-            orderByIdDesc = true;
-          }else if(params.get("orderBy").equals("idAsc")){
-            orderByIdDesc = false;
-          }
-          if(orderByIdDesc){
-             for(int i = filteredArticles2.size()-1; i >= 0;i--){
-               System.out.printf("%d / %s\n",filteredArticles2.get(i).id,filteredArticles2.get(i).title);
-             }
-          }else{
-            for(Article article : filteredArticles2){
-              System.out.printf("%d / %s\n",article.id,article.title);
-            }
-          }
-          continue;
-        }
+      } else if (rq.getActionMethodName().equals("detail")) {
+        actionUsrArticleDetail(rq, articles);
 
-
-         if (params.isEmpty()) {
-            for (int i = articles.size() - 1; i >= 0; i--) {
-              System.out.printf("%d / %s\n", articles.get(i).id, articles.get(i).title);
-            }
-          }
-      }                                                                     // ========== list 종료 ============
-      else if (rq.getActionMethodName().equals("detail")) {
-
-        try {
-          articles.get(Integer.parseInt(params.get("id")) - 1);
-        } catch (Exception e) {
-          System.out.println("id값은 양의 정수를 입력해주세요.");
-          continue;
-        }
-
-        if (Integer.parseInt(params.get("id")) > articles.size()) {
-          System.out.println("게시물이 존재하지 않습니다.");
-          continue;
-        }
-
-
-        Article article = articles.get(Integer.parseInt(params.get("id")) - 1);
-        System.out.println("- 게시물 상세내용 -");
-        System.out.printf("번호 : %d\n", article.id);
-        System.out.printf("제목 : %s\n", article.title);
-        System.out.printf("내용 : %s\n", article.body);
       } else if (rq.getActionMethodName().equals("write")) {
-        System.out.println("- 게시물 등록 -");
-        System.out.printf("제목 : ");
-        String title = sc.nextLine();
-        System.out.printf("내용 : ");
-        String body = sc.nextLine();
-        int id = articlesLastId + 1;
-        articlesLastId = id;
-
-        Article article = new Article(id, title, body);
-        articles.add(article);
-        System.out.println("생성된 게시물 객체 : " + article);
-
-        System.out.printf("%d번 게시물이 입력되었습니다.\n", article.id);
+        actionUsrArticleWrite(sc, articlesLastId, articles);
       } else {
         System.out.printf("입력된 명령어 : %s\n", cmd);
       }
@@ -121,6 +48,84 @@ public class Main {
     System.out.println("== 프로그램 종료 ==");
 
     sc.close();
+  }
+
+  private static void actionUsrArticleWrite(Scanner sc, int articlesLastId, List<Article> articles) {
+
+    System.out.println("- 게시물 등록 -");
+    System.out.printf("제목 : ");
+    String title = sc.nextLine();
+    System.out.printf("내용 : ");
+    String body = sc.nextLine();
+    int id = articlesLastId + 1;
+    articlesLastId = id;
+
+    Article article = new Article(id, title, body);
+    articles.add(article);
+    System.out.println("생성된 게시물 객체 : " + article);
+
+    System.out.printf("%d번 게시물이 입력되었습니다.\n", article.id);
+  }
+
+  private static void actionUsrArticleDetail(Rq rq, List<Article> articles) {
+    try {
+      articles.get(Integer.parseInt(rq.getParams().get("id")) - 1);
+    } catch (Exception e) {
+      System.out.println("id값은 양의 정수를 입력해주세요.");
+      return;
+    }
+
+    if (Integer.parseInt(rq.getParams().get("id")) > articles.size()) {
+      System.out.println("게시물이 존재하지 않습니다.");
+      return;
+    }
+    Article article = articles.get(Integer.parseInt(rq.getParams().get("id")) - 1);
+    System.out.println("- 게시물 상세내용 -");
+    System.out.printf("번호 : %d\n", article.id);
+    System.out.printf("제목 : %s\n", article.title);
+    System.out.printf("내용 : %s\n", article.body);
+
+  }
+
+  private static void actionUsrArticleList(Rq rq, List<Article> articles) {
+    System.out.println("- 게시물 리스트 -");
+    System.out.println("--------------------");
+    System.out.println("번호 / 제목");
+    System.out.println("--------------------");
+
+    if (rq.getParams().containsKey("searchKeyword") || rq.getParams().containsKey("page") || rq.getParams().containsKey("orderBy")) {
+      List<Article> filteredArticles1 = new ArrayList<>();
+      List<Article> filteredArticles2 = new ArrayList<>();
+      int page;
+      boolean orderByIdDesc = false;
+      String searchKeyword = rq.getParams().get("searchKeyword");
+      for (Article article : articles) {
+        if (article.title.contains(searchKeyword) || article.body.contains(searchKeyword)) {
+          filteredArticles1.add(article);
+        }
+      }
+      page = Integer.parseInt(rq.getParams().get("page"));
+      for (int i = filteredArticles1.size() - (page * 10); i < filteredArticles1.size() - ((page - 1) * 10); i++) {
+        try {
+          filteredArticles2.add(filteredArticles1.get(i));
+        } catch (IndexOutOfBoundsException e) {
+        }
+      }
+      if (rq.getParams().get("orderBy").equals("idDesc")) {
+        orderByIdDesc = true;
+      } else if (rq.getParams().get("orderBy").equals("idAsc")) {
+        orderByIdDesc = false;
+      }
+      if (orderByIdDesc) {
+        for (int i = filteredArticles2.size() - 1; i >= 0; i--) {
+          System.out.printf("%d / %s\n", filteredArticles2.get(i).id, filteredArticles2.get(i).title);
+        }
+      } else {
+        for (Article article : filteredArticles2) {
+          System.out.printf("%d / %s\n", article.id, article.title);
+        }
+      }
+    }
   }
 }
 
